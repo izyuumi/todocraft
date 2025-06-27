@@ -42,72 +42,75 @@ export function TaskItem({ task, isDragging, dragHandleProps }: TaskItemProps) {
   return (
     <Card
       className={cn(
-        "group p-3 flex items-center gap-3 transition-all hover:shadow-md",
-        isDragging && "opacity-50 shadow-lg rotate-2",
+        "group p-3 transition-all hover:shadow-md",
+        isDragging && "opacity-50 shadow-lg rotate-1",
         task.completed && "opacity-60"
       )}
     >
-      <div
-        {...dragHandleProps}
-        className="cursor-move text-muted-foreground hover:text-foreground transition-colors touch-none"
-      >
-        <GripVertical className="h-5 w-5" />
-      </div>
+      <div className="flex items-center gap-3">
+        <div
+          {...dragHandleProps}
+          className="cursor-move text-muted-foreground hover:text-foreground transition-colors touch-none flex-shrink-0"
+        >
+          <GripVertical className="h-5 w-5" />
+        </div>
 
-      <Checkbox
-        checked={task.completed}
-        onCheckedChange={() => toggleTask(task.id)}
-        className="h-5 w-5"
-      />
+        <Checkbox
+          checked={task.completed}
+          onCheckedChange={() => toggleTask(task.id)}
+          className="h-5 w-5 flex-shrink-0"
+        />
 
-      <div className="flex-1 min-w-0">
-        {isEditing ? (
-          <Input
-            value={editValue}
-            onChange={(e) => setEditValue(e.target.value)}
-            onBlur={handleEdit}
-            onKeyDown={handleKeyDown}
-            autoFocus
-            className="h-8"
-          />
-        ) : (
-          <div className="flex items-center gap-2">
-            <span
-              className={cn(
-                "break-all",
-                task.completed && "line-through text-muted-foreground"
-              )}
-              onDoubleClick={() => setIsEditing(true)}
-            >
-              {task.title}
-            </span>
-            {task.category && (
-              <span className="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded-md">
-                {task.category}
+        <div className="flex-1 min-w-0">
+          {isEditing ? (
+            <Input
+              value={editValue}
+              onChange={(e) => setEditValue(e.target.value)}
+              onBlur={handleEdit}
+              onKeyDown={handleKeyDown}
+              autoFocus
+              className="h-8"
+            />
+          ) : (
+            <div className="flex items-center gap-2">
+              <span
+                className={cn(
+                  "truncate",
+                  task.completed && "line-through text-muted-foreground"
+                )}
+                onDoubleClick={() => setIsEditing(true)}
+                title={task.title}
+              >
+                {task.title}
               </span>
-            )}
-          </div>
-        )}
-      </div>
+              {task.category && (
+                <span className="text-xs bg-secondary text-secondary-foreground px-2 py-0.5 rounded-md flex-shrink-0">
+                  {task.category}
+                </span>
+              )}
+            </div>
+          )}
+        </div>
 
-      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-        <Button
-          size="icon"
-          variant="ghost"
-          className="h-8 w-8"
-          onClick={() => setIsEditing(true)}
-          disabled={isEditing}
-        >
-          <Edit2 className="h-4 w-4" />
-        </Button>
-        <Button
-          size="icon"
-          variant="ghost"
-          className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
-          onClick={() => deleteTask(task.id)}
-        >
-          <Trash2 className="h-4 w-4" />
-        </Button>
+        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
+          <Button
+            size="icon"
+            variant="ghost"
+            className="h-8 w-8"
+            onClick={() => setIsEditing(true)}
+            disabled={isEditing}
+          >
+            <Edit2 className="h-4 w-4" />
+          </Button>
+          <Button
+            size="icon"
+            variant="ghost"
+            className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
+            onClick={() => deleteTask(task.id)}
+          >
+            <Trash2 className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
     </Card>
   );
