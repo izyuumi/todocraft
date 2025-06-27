@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import {
   DndContext,
   closestCenter,
@@ -17,15 +17,12 @@ import {
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
-} from '@dnd-kit/sortable'
-import {
   useSortable,
 } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { Task } from '@/lib/types'
 import { useTasks } from '@/lib/tasks-context'
 import { TaskItem } from './task-item'
-import { useState } from 'react'
 
 interface SortableTaskItemProps {
   task: Task
@@ -51,10 +48,12 @@ function SortableTaskItem({ task }: SortableTaskItemProps) {
       ref={setNodeRef}
       style={style}
       {...attributes}
-      {...listeners}
-      className="group"
     >
-      <TaskItem task={task} isDragging={isDragging} />
+      <TaskItem 
+        task={task} 
+        isDragging={isDragging}
+        dragHandleProps={listeners}
+      />
     </div>
   )
 }
@@ -64,7 +63,11 @@ export function TaskList() {
   const [activeId, setActiveId] = useState<string | null>(null)
 
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
@@ -91,11 +94,12 @@ export function TaskList() {
     const { active, over } = event
 
     if (active.id !== over?.id) {
-      const oldIndex = filteredTasks.findIndex((task) => task.id === active.id)
-      const newIndex = filteredTasks.findIndex((task) => task.id === over?.id)
+      const allTasks = [...tasks].sort((a, b) => a.order - b.order)
+      const oldIndex = allTasks.findIndex((task) => task.id === active.id)
+      const newIndex = allTasks.findIndex((task) => task.id === over?.id)
 
       if (oldIndex !== -1 && newIndex !== -1) {
-        const reordered = arrayMove(filteredTasks, oldIndex, newIndex)
+        const reordered = arrayMove(allTasks, oldIndex, newIndex)
         reorderTasks(reordered)
       }
     }

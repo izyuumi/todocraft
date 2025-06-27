@@ -37,16 +37,18 @@ export function TaskEditor() {
           onChange={(e) => setTitle(e.target.value)}
           onKeyDown={handleKeyDown}
           className="flex-1"
+          autoFocus
         />
         <Input
-          placeholder="Category (optional)"
+          placeholder="Category"
           value={category}
           onChange={(e) => setCategory(e.target.value)}
           onKeyDown={handleKeyDown}
-          className="w-32"
+          className="w-32 hidden sm:block"
         />
         <Button type="submit" size="icon" disabled={!title.trim()}>
           <Plus className="h-4 w-4" />
+          <span className="sr-only">Add task</span>
         </Button>
       </form>
     </Card>

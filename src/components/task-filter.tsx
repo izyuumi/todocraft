@@ -15,7 +15,7 @@ export function TaskFilter() {
   ]
 
   return (
-    <div className="flex gap-1 p-1 bg-muted rounded-lg">
+    <div className="flex gap-1 p-1 bg-muted/50 rounded-lg">
       {filters.map((item) => (
         <Button
           key={item.value}
